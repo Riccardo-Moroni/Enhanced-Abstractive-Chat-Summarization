@@ -1,30 +1,30 @@
 import os
-
+os.environ["WANDB_DISABLED"] = "true"
 import sys
 sys.path.append('../')
 import argparse
-import random
-import json
 import nltk
 import numpy as np
 import torch
-import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader, SequentialSampler
 from transformers import AutoTokenizer
-from transformers import AutoConfig, AutoModelForSeq2SeqLM
-from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
+from transformers import AutoConfig
+from transformers import Seq2SeqTrainingArguments
 from datasets import load_metric
-import wandb
-from data.dataset import SamsumDataset_total, DialogsumDataset_total
-from models.bart import BartForConditionalGeneration_DualDecoder
-from src.trainer import DualDecoderTrainer
+# import wandb
+
+# Update path for colab
+from dataset import SamsumDataset_total, DialogsumDataset_total
+from bart import BartForConditionalGeneration_DualDecoder
+from trainer import DualDecoderTrainer
 
 
 # Set Argument Parser
 parser = argparse.ArgumentParser()
 # Training hyperparameters
-parser.add_argument('--epoch', type=int, default=20)
-parser.add_argument('--train_batch_size', type=int, default=16)
+# parser.add_argument('--epoch', type=int, default=20)
+parser.add_argument('--epoch', type=int, default=1) #For testing
+# parser.add_argument('--train_batch_size', type=int, default=16)
+parser.add_argument('--train_batch_size', type=int, default=12) #For testing
 #parser.add_argument('--display_step',type=int, default=14000)
 parser.add_argument('--val_batch_size',type=int, default=4)
 parser.add_argument('--test_batch_size',type=int,default=1)
@@ -73,7 +73,7 @@ print('######################################################################')
 
 
 # Start WANDB Log (Set Logging API)
-wandb.init(project="ICSK4AS", reinit=True, entity='icsk4as')
+# wandb.init(project="ICSK4AS", reinit=True, entity='icsk4as')
 
 
 # Define Global Values
@@ -126,7 +126,9 @@ if args.dataset_name not in dataset_list:
 
 
 # Set metric
-metric = load_metric("../utils/rouge.py")
+# Update metric path for colab, or else use the relative path: "../utils/rouge.py"
+metric = load_metric("/content/SICK_Summarization/utils/rouge.py")
+
 
 # Load Tokenizer associated to the model
 tokenizer = AutoTokenizer.from_pretrained(args.model_name)
@@ -211,7 +213,7 @@ finetune_args = Seq2SeqTrainingArguments(
     #generation_num_beams=5,
     #metric_for_best_model='eval_rouge2',
     greater_is_better=True,
-    report_to = 'wandb',
+    # report_to = 'wandb',
 )
 
 def compute_metrics(eval_pred):
@@ -284,4 +286,4 @@ with open(args.test_output_file_name,"w") as f:
         f.write(i.replace("\n","")+"\n")
 """
 # END WANDB log
-wandb.finish()
+# wandb.finish()

@@ -1,115 +1,110 @@
-# Mind the Gap! Injecting Commonsense Knowledge for Abstractive Dialogue Summarization
-The official repository for the paper "Mind the Gap! Injecting Commonsense Knowledge for Abstractive Dialogue Summarization" accepted at COLING 2022.
+# Enhanced Abstractive Chat Summarization
 
-Paper Link : https://arxiv.org/abs/2209.00930
+## Overview
 
-Youtube Explanation : https://www.youtube.com/watch?v=xHr3Ujlib4Y
-
-Overview of method, SICK (Summarizing with Injected Commonsense Knowledge).
 <p align="center">
-  <img src="./SICK_overview.png" width="100%" height="80%">
+  <img src="./sick 2.jpg" width="100%" height="80%">
 </p>
 
+This repository contains an enhanced implementation of the paper "Mind the Gap! Injecting Commonsense Knowledge for Abstractive Dialogue Summarization" by Seungone Kim et al. that can be found [here](https://github.com/SeungoneKim/SICK_Summarization).
+
+Our work, titled "Leveraging Emojis, Keywords and Slang for Enhanced Abstractive Chat Summarization," builds upon the foundations laid by the aforementioned paper. We introduce novel extensions which consist in exploring the use of emojis, keywords, and an effective slang handling to improve the quality of generated summaries.
+
+## Abstract
+
+In this study, we present innovative enhancements to the abstractive chat summarization task. Our approach extends previous research that emphasized the advantages of injecting commonsense knowledge into dialogue summarization. The primary focus of our extensions includes:
+
+1. **Emojis Significance:** We investigate the importance of emojis in dialogues and chat-like conversations. Emojis are explored as a rich source of information that can contribute to the generation of summaries with increased accuracy and contextual relevance.
+
+2. **Keywords Injection:** We explore the impact of injecting keywords into the summarization process. Our findings highlight the beneficial role of keywords in improving the quality of dialogue summaries.
+
+3. **Slang Handling:** We introduce a preprocessing technique to effectively handle slang in conversations. This addition aims to enhance the comprehensibility of generated summaries in the context of informal language use.
+
+The results obtained from our framework show promising outcomes, indicating the potential for improved abstractive chat summarization. We believe that our contributions provide a valuable foundation for future research endeavors in this field.
+
 ## Setting
-The following command will clone the project:
+To utilize our enhanced abstractive chat summarization framework we suggest the use of Google Colab and the execution of the following steps.
+
+Clone the repository:
 ```
-git clone https://github.com/SeungoneKim/SICK_Summarization.git
+git clone https://github.com/al3ssandrocaruso/Enhanced-Abstractive-Chat-Summarization.git
+```
+Run these commands:
+```
+!pip install -r requirements.txt
+!sudo apt-get update -y
+!sudo apt-get install python3.8
+!sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+!sudo update-alternatives --config python3
+!sudo apt install python3-pip
+!sudo apt install python3.8-distutils
+!python -m spacy download en_core_web_sm
 ```
 
-Before experimenting, you can make a virtual environment for the project.
-```
-conda create -n sick python=3.8
-conda activate sick
-pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1 -f https://download.pytorch org/whl/cu113/torch_stable.html
-pip install -r requirements.txt
-pip install -U spacy
-python -m spacy download en_core_web_sm
-```
-
-## Dataset Download
+### Dataset Download
 For training and evaluating on Samsum, we use dataset provided by [Hugging Face Dataset Library](https://github.com/huggingface/datasets). For Dialogsum, the dataset is not automatically provided, so you can download it from the url below,
 ```
-https://drive.google.com/drive/folders/1CuZaU5Xw0AiIPaBTRrjToFkktS7_6KwG?usp=share_link
+https://drive.google.com/drive/folders/1plWw-jWvYo0QZsr1rv9BtXb0dYuRPsv1?usp=sharing
 ```
-and put it under the directory of SICK_summarization/data/DialogSum_Data.
+and put it under the directory of Enhanced-Abstractive-Chat-Summarization/data/DialogSum_Data .
 ```
 mkdir data/DialogSum_Data
 ```
 
 Also, you could download the preprocessed commonsense data from the url below,
 ```
-https://drive.google.com/drive/folders/1z1MXBGJ3pt0lC5dneMfFrQgxXTD8Iqrr?usp=share_link
+https://drive.google.com/drive/folders/14Ot_3jYrXCONw_jUDgnCcojbFQUA10Ns?usp=sharing
 ```
-and put it under the directory of SICK_summarization/data/COMET_data.
+and put it in the directory of Enhanced-Abstractive-Chat-Summarization/data/COMET_data.
 ```
 mkdir data/COMET_data
 ```
+To process the commonsense data [COMET-ATOMIC 2020](https://github.com/allenai/comet-atomic-2020) and [PARACOMET](https://github.com/skgabriel/paracomet) were used.
 
-To process the commonsense data, we used [COMET-ATOMIC 2020](https://github.com/allenai/comet-atomic-2020) and [PARACOMET](https://github.com/skgabriel/paracomet) github repository. Huge thanks to the authors for providing the awesome code:)
-
-
-## Training & Evaluation
-You can use the following commands to train either SICK, SICK++. Note that for SICK++, we use the customized model class, BartForConditionalGeneration_DualDecoder and the customized trainer class DualDecoderTrainer each located in models/bart.py and src/trainer.py. It will automatically loaded if you set the following arguments correctly.
-
-
-For training SICK, you can use the following command.
+### Preprocessed JSON Files
+You can download all the needed json files to run our extensions from here: 
 ```
-CUDA_VISIBLE_DEVICES="1" python3 train_summarization_context.py --finetune_weight_path="./new_weights_sick" --best_finetune_weight_path="./new_weights_sick_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
+TODO
 ```
-Some configs to specify.
-
-- dataset_name : Specify either "samsum" or "dialogsum"
-- use_paracomet : If you set to true, it will use paracomet, and if not, it will use comet by default.
-- use_sentence_transformer : If you would like to use the commonsense selected with sentence_transformer, you should use this argument
-- use_roberta : If you would like to use the commonsense selected with roberta_nli model, you should use this argument.
-- relation : If you would only like to use one of the 5 possible relations, you could specify it with this argument.
-
-
-For training SICK++, you can use the following command.
+and please put them inside this folder:
 ```
-CUDA_VISIBLE_DEVICES="1" python3 train_summarization_full.py --finetune_weight_path="./new_weights_sickplus" --best_finetune_weight_path="./new_weights_sickplus_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --supervision_relation "xIntent" --epoch=1 --use_sentence_transformer True
+Enhanced-Abstractive-Chat-Summarization/data/COMET_data/paracomet/dialogue/
 ```
-Some configs to specify.
-
-- dataset_name : Specify either "samsum" or "dialogsum"
-- use_paracomet : If you set to true, it will use paracomet, and if not, it will use comet by default.
-- use_sentence_transformer : If you would like to use the commonsense selected with sentence_transformer, you should use this argument
-- use_roberta : If you would like to use the commonsense selected with roberta_nli model, you should use this argument.
-- relation : If you would only like to use one of the 5 possible relations, you could specify it with this argument.
-- supervision_relation : If you would only like to use one of the 5 possible supervision relations, you could specify it with this argument.
-
-
-For inferencing either SICK or SICK++, you could use the following command.
+### Pretrained W2V
+Although not strictly necessary, you can still download the W2V model (both the version trained on the twitter dataset (TODO:link to twitter dataset) and the one finetuned on Samsum) from here:
 ```
-CUDA_VISIBLE_DEVICES="1" python3 inference.py --dataset_name "samsum" --model_checkpoint="./new_weights_paracomet_best" --test_output_file_name="./tmp_result.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
+https://drive.google.com/drive/folders/1q8QOSHmAudSsRqEKhAu5fgcHKbsj8ooD?usp=sharing
+``` 
+
+## Train
+To train the original SICK model execute the following command: 
+
+```
+!python3 ./Enhanced-Abstractive-Chat-Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick" --best_finetune_weight_path="./new_weights_sick_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
 ```
 
-Some configs to specify.
-- dataset_name : Specify either "samsum" or "dialogsum"
-- use_paracomet : If you set to true, it will use paracomet, and if not, it will use comet by default.
-- use_sentence_transformer : If you would like to use the commonsense selected with sentence_transformer, you should use this argument
-- use_roberta : If you would like to use the commonsense selected with roberta_nli model, you should use this argument.
-- relation : If you would only like to use one of the 5 possible relations, you could specify it with this argument.
-- supervision_relation : If you would only like to use one of the 5 possible supervision relations, you could specify it with this argument.
-- num_beams : beam size during decoding
-- model_checkpoint : The checkpoint to use during inference(test) time. We suggest to use the best_finetune_weight_path during training.
-- training_configuration : If you want to test SICK, type "context". If you want to test SICK++, type "full". 
+In order to include our extensions please add the following parameters (singularly or as in supported combinations below):  
+
+- emoji_m0 : If True emojis in the dataset are replaced with their aliases according to this dataset (TODO: link).
+- emoji_m1 : If True it replaces emojis in the dataset with custom tokens containing their most similar words based on a W2V model which was trained on a twitter dataset and finetuned on Samsum dataset.
+- keyword : If True KeyBert is used to build and add to the dataset new custom tokens containing the keywords it is capable to retrieve from each utterance. 
+- slang : If True the model is trained on a dataset in which slang expressions are replaced with their corresponding actual meaning. 
+
+As for now, the supported combinations of these parameters are: ```emoji_m1 + slang + keyword```, ```emoji_m1 + keyword```
+
+*Note*: our implementations only work with Samsum dataset. 
+
+We suggest to use different values for the ```--finetune_weight_path``` and ```--best_finetune_weight_path``` parameters on different runs to then be able to infer using all the models you trained by using the differently-named checkpoints (to be given as ```--model_checkpoint``` parameter to inference.py) 
 
 
-## Citation
-If you find this useful, please consider citing our paper:
+## Inference
+Obtain inferences executing the next command:
 ```
-@inproceedings{kim2022mind,
-  title={Mind the Gap! Injecting Commonsense Knowledge for Abstractive Dialogue Summarization},
-  author={Kim, Seungone and Joo, Se June and Chae, Hyungjoo and Kim, Chaehyeong and Hwang, Seung-won and Yeo, Jinyoung},
-  booktitle={Proceedings of the 29th International Conference on Computational Linguistics},
-  pages={6285--6300},
-  year={2022}
-}
-```  
+!python3 /content/Enhanced-Abstractive-Chat-Summarization/src/inference.py --dataset_name "samsum" --model_checkpoint="./new_weights_sick_best" --test_output_file_name="./summaries.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
+```
+Make sure to be using the right value for the ```--model_checkpoint``` parameter if you trained the model more than once using different extensions.
 
-## Point of contact
-For any questions about the implementation or content of the paper, you could contact me via the following email:)
-```
-louisdebroglie@kaist.ac.kr
-```
+TODO: 
+- share the missing jsons
+- link the twitter dataset in the w2v
+- link the emoji dataset for emoji_m0
