@@ -27,7 +27,7 @@ To utilize our enhanced abstractive chat summarization framework we suggest the 
 
 Clone the repository:
 ```
-git clone https://github.com/al3ssandrocaruso/Enhanced-Abstractive-Chat-Summarization.git
+git clone https://github.com/Riccardo-Moroni/Enhanced-Abstractive-Chat-Summarization.git
 ```
 Run these commands:
 ```
